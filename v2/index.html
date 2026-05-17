@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Time Learning Colors - Player</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <h1>Time Learning Colors</h1>
+        <p class="subtitle">Play controller</p>
+      </header>
+
+      <section class="panel">
+        <div class="status">
+          <div class="status-row">
+            <span class="label">Mic:</span>
+            <span id="micStatus" class="value">Not requested</span>
+          </div>
+          <div class="status-row">
+            <span class="label">Step:</span>
+            <span id="stepStatus" class="value">Idle</span>
+          </div>
+        </div>
+
+        <div class="inputs">
+          <label>
+            Child name
+            <input id="childName" type="text" placeholder="Layla" />
+          </label>
+          <label>
+            Parent name
+            <input id="parentName" type="text" placeholder="Daddy" />
+          </label>
+        </div>
+
+        <div id="content" class="content">
+          <p>Load the play and press Play.</p>
+        </div>
+
+        <div class="controls">
+          <button id="playBtn" class="primary">Play</button>
+          <button id="continueBtn" class="secondary" disabled>Continue</button>
+          <button id="skipBtn" class="secondary" disabled>Skip</button>
+          <button id="successBtn" class="success" disabled>Success</button>
+          <button id="retryBtn" class="warning" disabled>Retry</button>
+          <button id="stopBtn" class="danger" disabled>Stop</button>
+        </div>
+      </section>
+
+      <footer>
+        <p>Play data is embedded in this app.</p>
+      </footer>
+    </div>
+
+    <script src="/v2/app_v2.js"></script>
+  </body>
+</html>

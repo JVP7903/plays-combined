@@ -1,0 +1,153 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background: linear-gradient(160deg, #f7f7ff, #eef5ff);
+  color: #1f2937;
+}
+
+.app {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 2.2rem;
+}
+
+.subtitle {
+  margin: 8px 0 0;
+  color: #6b7280;
+}
+
+.panel {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.1);
+  padding: 24px;
+}
+
+.status {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+}
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.inputs {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.inputs label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+.inputs input {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 1rem;
+}
+
+.label {
+  color: #6b7280;
+}
+
+.value {
+  font-weight: 600;
+}
+
+.content {
+  min-height: 120px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #f9fafb;
+  margin-bottom: 16px;
+  font-size: 1rem;
+}
+
+.transcript {
+  margin: 10px 0 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #eef2ff;
+  color: #1f2937;
+  font-size: 0.95rem;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+button {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.2s ease;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.success {
+  background: #10b981;
+  color: #fff;
+}
+
+.warning {
+  background: #f59e0b;
+  color: #fff;
+}
+
+.danger {
+  background: #ef4444;
+  color: #fff;
+}
+
+footer {
+  text-align: center;
+  color: #6b7280;
+  margin-top: 18px;
+  font-size: 0.85rem;
+}

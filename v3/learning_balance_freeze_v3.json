@@ -1,0 +1,286 @@
+{
+  "play_id": "balance_freeze_v3",
+  "title": "Balance Freeze",
+  "version": "v3",
+  "variables": {
+    "child_name": {
+      "label": "Child's name",
+      "example": "Layla",
+      "required": true
+    },
+    "parent_name": {
+      "label": "Parent/caregiver name",
+      "example": "Daddy",
+      "required": true
+    }
+  },
+  "scenes": [
+    {
+      "id": "intro_greeting",
+      "type": "tts",
+      "audio_file": "intro_greeting.mp3",
+      "text": "[playful][excited] Hiiiii {{child_name}}!! [big laugh] how are you today?"
+    },
+    {
+      "id": "listen_intro_response",
+      "type": "listen",
+      "duration_seconds": 7,
+      "branches": {
+        "good_day": "intro_good_day",
+        "general": "intro_general",
+        "bad_day": "intro_bad_day"
+      }
+    },
+    {
+      "id": "intro_good_day",
+      "type": "tts",
+      "audio_file": "intro_good_day.mp3",
+      "text": "[playful][happy] I’m doing sooo good too! [big laugh] I love you’re having a great day {{child_name}}! [short pause] Are you ready to play a fun game with {{parent_name}}?",
+      "next": "listen_intro_confirm"
+    },
+    {
+      "id": "intro_general",
+      "type": "tts",
+      "audio_file": "intro_general.mp3",
+      "text": "[playful][excited] O.M.G. that’s sooo awesome {{child_name}}! [big laugh] Are you ready to play a fun game with {{parent_name}}?",
+      "next": "listen_intro_confirm"
+    },
+    {
+      "id": "intro_bad_day",
+      "type": "tts",
+      "audio_file": "intro_bad_day.mp3",
+      "text": "[playful][loving] Awww I’m so sorry {{child_name}}… [short pause] can I give you a big hug before we play?",
+      "next": "bad_day_followup"
+    },
+    {
+      "id": "bad_day_followup",
+      "type": "tts",
+      "audio_file": "bad_day_followup.mp3",
+      "text": "[playful][gentle] Okay {{child_name}}… [short pause] maybe this game will help make you feel better.",
+      "next": "lets_start"
+    },
+    {
+      "id": "listen_intro_confirm",
+      "type": "listen",
+      "duration_seconds": 8,
+      "next": "lets_start"
+    },
+    {
+      "id": "lets_start",
+      "type": "tts",
+      "audio_file": "lets_start.mp3",
+      "text": "[playful][excited] Allllllllright {{child_name}}! [big laugh] let’s do it!!",
+      "next": "start_song"
+    },
+    {
+      "id": "start_song",
+      "type": "audio",
+      "audio_file": "start_song.mp3",
+      "next": "game_name"
+    },
+    {
+      "id": "game_name",
+      "type": "tts",
+      "audio_file": "game_name.mp3",
+      "text": "[playful][excited] We’re playing… Balance Freeze! And {{parent_name}}, you’re playing too! [laugh] I want to see BOTH of your silly moves! [laugh]",
+      "next": "instructions"
+    },
+    {
+      "id": "instructions",
+      "type": "audio",
+      "audio_file": "instructions.mp3",
+      "next": "round1_instruction_ask"
+    },
+    {
+      "id": "round1_instruction_ask",
+      "type": "audio",
+      "audio_file": "round1_instruction_ask.mp3",
+      "next": "listen_round1_ready"
+    },
+    {
+      "id": "listen_round1_ready",
+      "type": "listen",
+      "duration_seconds": 8,
+      "next": "round1_confirm_start"
+    },
+    {
+      "id": "round1_confirm_start",
+      "type": "audio",
+      "audio_file": "round1_confirm_start.mp3",
+      "next": "round1_freeze_song"
+    },
+    {
+      "id": "round1_freeze_song",
+      "type": "audio",
+      "audio_file": "freeze_song.mp3",
+      "next": "round1_freeze"
+    },
+    {
+      "id": "round1_freeze",
+      "type": "audio",
+      "audio_file": "round1_freeze.mp3",
+      "next": "round1_action"
+    },
+    {
+      "id": "round1_action",
+      "type": "tts",
+      "audio_file": "round1_action.mp3",
+      "text": "[playful][excited] Allllllllright {{child_name}} and {{parent_name}}! [laugh] Now keep moving on one foot... like a flamingo! [laugh] Tiny hops count!",
+      "next": "round1_flamingo_song"
+    },
+    {
+      "id": "round1_flamingo_song",
+      "type": "audio",
+      "audio_file": "flamingo_hop_song.mp3",
+      "next": "round1_react"
+    },
+    {
+      "id": "round1_react",
+      "type": "audio",
+      "audio_file": "round1_react.mp3",
+      "next": "round2_instruction_ask"
+    },
+
+    {
+      "id": "round2_instruction_ask",
+      "type": "audio",
+      "audio_file": "round2_instruction_ask.mp3",
+      "next": "listen_round2_ready"
+    },
+    {
+      "id": "listen_round2_ready",
+      "type": "listen",
+      "duration_seconds": 8,
+      "next": "round2_confirm_start"
+    },
+    {
+      "id": "round2_confirm_start",
+      "type": "tts",
+      "audio_file": "round2_confirm_start.mp3",
+      "text": "[playful][excited] Good job {{child_name}}! [laugh] That’s it! Oh my goodness you both look so silly! [laugh] Alllllllllllright, Let’s go!",
+      "next": "round2_freeze_song"
+    },
+    {
+      "id": "round2_freeze_song",
+      "type": "audio",
+      "audio_file": "freeze_song.mp3",
+      "next": "round2_freeze_action"
+    },
+    {
+      "id": "round2_freeze_action",
+      "type": "tts",
+      "audio_file": "round2_freeze_action.mp3",
+      "text": "[playful][sudden] FREEEEEZE!!! Hands on your head! Don’t let your hat fall! [laugh] [playful][excited] Allllllllright {{child_name}}! [laugh] Now move around with your hands on your head and flap like a bird! Careful! [laugh]",
+      "next": "round2_bird_song"
+    },
+    {
+      "id": "round2_bird_song",
+      "type": "audio",
+      "audio_file": "bird_flap_song.mp3",
+      "next": "round2_extra_react"
+    },
+    {
+      "id": "round2_extra_react",
+      "type": "audio",
+      "audio_file": "round2_extra_react.mp3",
+      "next": "round3_build"
+    },
+
+    {
+      "id": "round3_build",
+      "type": "tts",
+      "audio_file": "round3_build.mp3",
+      "text": "[playful][excited] Allllllright, last one… you are doing so great {{child_name}} im having so much fun!! [laugh]",
+      "next": "round3_instruction"
+    },
+    {
+      "id": "round3_instruction",
+      "type": "audio",
+      "audio_file": "round3_instruction.mp3",
+      "next": "round3_ask"
+    },
+    {
+      "id": "round3_ask",
+      "type": "audio",
+      "audio_file": "round3_ask.mp3",
+      "next": "listen_round3_ready"
+    },
+    {
+      "id": "listen_round3_ready",
+      "type": "listen",
+      "duration_seconds": 8,
+      "next": "round3_confirm"
+    },
+    {
+      "id": "round3_confirm",
+      "type": "tts",
+      "audio_file": "round3_confirm.mp3",
+      "text": "[playful][sassy] Allllllllright {{child_name}}! [laugh] I see you getting so small! That’s perfect girly! [laugh] Lets go!!!",
+      "next": "round3_freeze_song"
+    },
+    {
+      "id": "round3_freeze_song",
+      "type": "audio",
+      "audio_file": "freeze_song.mp3",
+      "next": "round3_freeze"
+    },
+    {
+      "id": "round3_freeze",
+      "type": "audio",
+      "audio_file": "round3_freeze.mp3",
+      "next": "round3_action"
+    },
+    {
+      "id": "round3_action",
+      "type": "tts",
+      "audio_file": "round3_action.mp3",
+      "text": "[playful][excited] Allllllllright {{child_name}}! [laugh] Now move around SUPER SMALL! Tiny steps! Tiny moves! [laugh]",
+      "next": "round3_tiny_steps_song"
+    },
+    {
+      "id": "round3_tiny_steps_song",
+      "type": "audio",
+      "audio_file": "tiny_steps_song.mp3",
+      "next": "round3_extra_react"
+    },
+    {
+      "id": "round3_extra_react",
+      "type": "audio",
+      "audio_file": "round3_extra_react.mp3",
+      "next": "ending_praise_question"
+    },
+
+    {
+      "id": "ending_praise_question",
+      "type": "tts",
+      "audio_file": "ending_praise_question.mp3",
+      "text": "[playful][happy] That was sooo much fun {{child_name}}! [short pause] You and {{parent_name}} did such a good job balancing and being super silly! [laugh] Did you have fun {{child_name}}?",
+      "next": "listen_ending_confirm"
+    },
+    {
+      "id": "listen_ending_confirm",
+      "type": "listen",
+      "duration_seconds": 8,
+      "next": "final_ending"
+    },
+    {
+      "id": "final_ending",
+      "type": "audio",
+      "audio_file": "final_ending.mp3",
+      "next": "end_song"
+    },
+    {
+      "id": "end_song",
+      "type": "audio",
+      "audio_file": "end_song.mp3",
+      "next": "goodbye"
+    },
+    {
+      "id": "goodbye",
+      "type": "tts",
+      "audio_file": "goodbye.mp3",
+      "text": "[playful][excited] [big laugh] We should play again really soon! [short pause] Bye-bye {{child_name}}… bye {{parent_name}}! [big laugh]",
+      "next": "end"
+    }
+  ]
+}

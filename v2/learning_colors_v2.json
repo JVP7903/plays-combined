@@ -1,0 +1,410 @@
+{
+  "play_id": "color_collect_v2",
+  "title": "Color Collect V2",
+  "variables": {
+    "child_name": {
+      "label": "Child's name",
+      "example": "Layla",
+      "required": true
+    },
+    "parent_name": {
+      "label": "Parent/caregiver name",
+      "example": "Daddy",
+      "required": true
+    }
+  },
+  "scenes": [
+    {
+      "id": "intro_greeting",
+      "type": "tts",
+      "audio_file": "intro_greeting.mp3",
+      "text": "[playful][excited] Hiiiii {{child_name}}!! [big laugh] how are you today?"
+    },
+    {
+      "id": "listen_intro_response",
+      "type": "listen",
+      "duration_seconds": 7,
+      "branches": {
+        "good_day": "intro_good_day",
+        "general": "intro_general",
+        "bad_day": "intro_bad_day"
+      }
+    },
+    {
+      "id": "intro_good_day",
+      "type": "tts",
+      "audio_file": "intro_good_day.mp3",
+      "text": "[playful][happy] I’m doing sooo great and ready to learn some colors!! [big laugh] Are you ready to learn some colors {{child_name}}?",
+      "next": "listen_intro_confirm_start"
+    },
+    {
+      "id": "intro_general",
+      "type": "tts",
+      "audio_file": "intro_general.mp3",
+      "text": "[playful][excited] O.M.G. that’s sooo awesome {{child_name}}! [big laugh] Are you ready to learn some colors with {{parent_name}}?",
+      "next": "listen_intro_confirm_start"
+    },
+    {
+      "id": "intro_bad_day",
+      "type": "tts",
+      "audio_file": "intro_bad_day.mp3",
+      "text": "[playful][loving] I’m so sorry {{child_name}}… can I give you a big hug before we learn some colors?",
+      "next": "listen_intro_confirm_bad_day"
+    },
+    {
+      "id": "listen_intro_confirm_start",
+      "type": "listen",
+      "duration_seconds": 5,
+      "next": "lets_do_it"
+    },
+    {
+      "id": "listen_intro_confirm_bad_day",
+      "type": "listen",
+      "duration_seconds": 5,
+      "next": "bad_day_intro_reply"
+    },
+    {
+      "id": "bad_day_intro_reply",
+      "type": "tts",
+      "audio_file": "bad_day_intro_reply.mp3",
+      "text": "[playful][gentle] Okay {{child_name}}… [short pause] let’s find some colors together, that always makes me feel better.",
+      "next": "lets_do_it"
+    },
+    {
+      "id": "lets_do_it",
+      "type": "tts",
+      "audio_file": "lets_do_it.mp3",
+      "text": "[playful][excited] Allllllright {{child_name}}!! [big laugh] let’s do it!!",
+      "next": "start_song"
+    },
+    {
+      "id": "start_song",
+      "type": "audio",
+      "audio_file": "intro_song.mp3",
+      "next": "pink_parent_prompt"
+    },
+
+    {
+      "id": "pink_parent_prompt",
+      "type": "tts",
+      "audio_file": "pink_parent_prompt.mp3",
+      "text": "[playful][big laugh] That was silly. [short pause] Allllllright {{child_name}}, {{parent_name}} has something that is the color pink. [short pause] What do you have that’s pink, {{parent_name}}?"
+    },
+    {
+      "id": "listen_parent_pink",
+      "type": "listen",
+      "duration_seconds": 7,
+      "next": "pink_child_prompt"
+    },
+    {
+      "id": "pink_child_prompt",
+      "type": "tts",
+      "audio_file": "pink_child_prompt.mp3",
+      "text": "[playful] Ooooh nice one {{parent_name}}! [laugh] Allllllright {{child_name}}, now it’s your turn! Look around the room and find as many pink things as you can, and bring them back when the music stops! Sound good, {{child_name}} and {{parent_name}}?"
+    },
+    {
+      "id": "listen_child_ready_pink",
+      "type": "listen",
+      "duration_seconds": 5,
+      "next": "lets_go_pink"
+    },
+    {
+      "id": "lets_go_pink",
+      "type": "audio",
+      "audio_file": "lets_go_pink.mp3",
+      "next": "searching_song_pink"
+    },
+    {
+      "id": "searching_song_pink",
+      "type": "audio",
+      "audio_file": "searching_song.mp3",
+      "next": "pink_freeze"
+    },
+    {
+      "id": "pink_freeze",
+      "type": "tts",
+      "audio_file": "pink_freeze.mp3",
+      "text": "[playful][excited] FREEEEEZE!!! [laugh] Time’s up! [short pause] Bring your pink things back and show me and {{parent_name}}! What do you got {{child_name}}?"
+    },
+    {
+      "id": "listen_pink_freeze",
+      "type": "listen",
+      "duration_seconds": 7,
+      "next": "pink_found_congrats"
+    },
+    {
+      "id": "pink_found_congrats",
+      "type": "tts",
+      "audio_file": "pink_found_congrats.mp3",
+      "text": "[playful][excited] Yaaay {{child_name}}! [laugh] You did sooo good finding pink things!",
+      "next": "pink_song"
+    },
+    {
+      "id": "pink_song",
+      "type": "audio",
+      "audio_file": "pink_song.mp3",
+      "next": "pink_next"
+    },
+    {
+      "id": "pink_next",
+      "type": "tts",
+      "audio_file": "pink_next.mp3",
+      "text": "[playful][laugh] Keep your pink things close, because we’re going to count everything at the end! [short pause] Let’s keep going with blue next. What do you say?"
+    },
+    {
+      "id": "listen_move_on_blue",
+      "type": "listen",
+      "duration_seconds": 5,
+      "next": "blue_parent_prompt"
+    },
+
+    {
+      "id": "blue_parent_prompt",
+      "type": "tts",
+      "audio_file": "blue_parent_prompt.mp3",
+      "text": "[playful] Allllllright {{child_name}}… [short pause] {{parent_name}} has something that is the color blue. What do you have that’s blue, {{parent_name}}?"
+    },
+    {
+      "id": "listen_parent_blue",
+      "type": "listen",
+      "duration_seconds": 7,
+      "next": "blue_child_prompt"
+    },
+    {
+      "id": "blue_child_prompt",
+      "type": "tts",
+      "audio_file": "blue_child_prompt.mp3",
+      "text": "[playful] Ohhh that’s a good one {{parent_name}}! [laugh] Allllllright {{child_name}}, now it’s your turn! Look around the room and find as many blue things as you can, and bring them back when the music stops! Sound good, {{child_name}} and {{parent_name}}?"
+    },
+    {
+      "id": "listen_child_ready_blue",
+      "type": "listen",
+      "duration_seconds": 5,
+      "next": "lets_go_blue"
+    },
+    {
+      "id": "lets_go_blue",
+      "type": "audio",
+      "audio_file": "lets_go_blue.mp3",
+      "next": "searching_song_blue"
+    },
+    {
+      "id": "searching_song_blue",
+      "type": "audio",
+      "audio_file": "searching_song.mp3",
+      "next": "blue_freeze"
+    },
+    {
+      "id": "blue_freeze",
+      "type": "tts",
+      "audio_file": "blue_freeze.mp3",
+      "text": "[playful][excited] FREEEEEZE!!! [laugh] Time’s up! [short pause] Bring your blue things back and show me and {{parent_name}}! What do you got {{child_name}}?"
+    },
+    {
+      "id": "listen_blue_freeze",
+      "type": "listen",
+      "duration_seconds": 7,
+      "next": "blue_found_congrats"
+    },
+    {
+      "id": "blue_found_congrats",
+      "type": "tts",
+      "audio_file": "blue_found_congrats.mp3",
+      "text": "[playful][excited] Yaaay {{child_name}}! [laugh] You did sooo good finding blue things!",
+      "next": "blue_song"
+    },
+    {
+      "id": "blue_song",
+      "type": "audio",
+      "audio_file": "blue_song.mp3",
+      "next": "blue_next"
+    },
+    {
+      "id": "blue_next",
+      "type": "tts",
+      "audio_file": "blue_next.mp3",
+      "text": "[playful][laugh] Put your blue things with your pink things, because we’re going to count them all at the end! [short pause] Let’s keep going with purple next. What do you say?"
+    },
+    {
+      "id": "listen_move_on_purple",
+      "type": "listen",
+      "duration_seconds": 5,
+      "next": "purple_parent_prompt"
+    },
+
+    {
+      "id": "purple_parent_prompt",
+      "type": "tts",
+      "audio_file": "purple_parent_prompt.mp3",
+      "text": "[playful] Allllllright {{child_name}} you superstar… [short pause] {{parent_name}} has something that is the color purple. What do you have that’s purple, {{parent_name}}?"
+    },
+    {
+      "id": "listen_parent_purple",
+      "type": "listen",
+      "duration_seconds": 7,
+      "next": "purple_child_prompt"
+    },
+    {
+      "id": "purple_child_prompt",
+      "type": "tts",
+      "audio_file": "purple_child_prompt.mp3",
+      "text": "[playful] Ooooh I like that one {{parent_name}}! [laugh] Allllllright {{child_name}}, now it’s your turn! Look around the room and find as many purple things as you can, and bring them back when the music stops! Sound good, {{child_name}} and {{parent_name}}?"
+    },
+    {
+      "id": "listen_child_ready_purple",
+      "type": "listen",
+      "duration_seconds": 5,
+      "next": "lets_go_purple"
+    },
+    {
+      "id": "lets_go_purple",
+      "type": "audio",
+      "audio_file": "lets_go_purple.mp3",
+      "next": "searching_song_purple"
+    },
+    {
+      "id": "searching_song_purple",
+      "type": "audio",
+      "audio_file": "searching_song.mp3",
+      "next": "purple_freeze"
+    },
+    {
+      "id": "purple_freeze",
+      "type": "tts",
+      "audio_file": "purple_freeze.mp3",
+      "text": "[playful][excited] FREEEEEZE!!! [laugh] Time’s up! [short pause] Bring your purple things back and show me and {{parent_name}}! What do you got {{child_name}}?"
+    },
+    {
+      "id": "listen_purple_freeze",
+      "type": "listen",
+      "duration_seconds": 7,
+      "next": "purple_found_congrats"
+    },
+    {
+      "id": "purple_found_congrats",
+      "type": "tts",
+      "audio_file": "purple_found_congrats.mp3",
+      "text": "[playful][excited] Yaaay {{child_name}}! [laugh] You did sooo good finding purple things!",
+      "next": "purple_song"
+    },
+    {
+      "id": "purple_song",
+      "type": "audio",
+      "audio_file": "purple_song.mp3",
+      "next": "purple_next"
+    },
+    {
+      "id": "purple_next",
+      "type": "tts",
+      "audio_file": "purple_next.mp3",
+      "text": "[playful][laugh] Put your purple things with the others, because we’re counting everything at the end! [short pause] Let’s keep going with green next. What do you say?"
+    },
+    {
+      "id": "listen_move_on_green",
+      "type": "listen",
+      "duration_seconds": 5,
+      "next": "green_parent_prompt"
+    },
+
+    {
+      "id": "green_parent_prompt",
+      "type": "tts",
+      "audio_file": "green_parent_prompt.mp3",
+      "text": "[playful] Allllllright {{child_name}}… [short pause] {{parent_name}} has something that is the color green. What do you have that’s green, {{parent_name}}?"
+    },
+    {
+      "id": "listen_parent_green",
+      "type": "listen",
+      "duration_seconds": 7,
+      "next": "green_child_prompt"
+    },
+    {
+      "id": "green_child_prompt",
+      "type": "tts",
+      "audio_file": "green_child_prompt.mp3",
+      "text": "[playful] Ohhh I see it {{parent_name}}! [laugh] Allllllright {{child_name}}, now it’s your turn! Look around the room and find as many green things as you can, and bring them back when the music stops! Sound good, {{child_name}} and {{parent_name}}?"
+    },
+    {
+      "id": "listen_child_ready_green",
+      "type": "listen",
+      "duration_seconds": 5,
+      "next": "lets_go_green"
+    },
+    {
+      "id": "lets_go_green",
+      "type": "audio",
+      "audio_file": "lets_go_green.mp3",
+      "next": "searching_song_green"
+    },
+    {
+      "id": "searching_song_green",
+      "type": "audio",
+      "audio_file": "searching_song.mp3",
+      "next": "green_freeze"
+    },
+    {
+      "id": "green_freeze",
+      "type": "tts",
+      "audio_file": "green_freeze.mp3",
+      "text": "[playful][excited] FREEEEEZE!!! [laugh] Time’s up! [short pause] Bring your green things back and show me and {{parent_name}}! What do you got {{child_name}}?"
+    },
+    {
+      "id": "listen_green_freeze",
+      "type": "listen",
+      "duration_seconds": 7,
+      "next": "green_found_congrats"
+    },
+    {
+      "id": "green_found_congrats",
+      "type": "tts",
+      "audio_file": "green_found_congrats.mp3",
+      "text": "[playful][excited] Yaaay {{child_name}}! [laugh] You did sooo good finding green things!",
+      "next": "green_song"
+    },
+    {
+      "id": "green_song",
+      "type": "audio",
+      "audio_file": "green_song.mp3",
+      "next": "ending_start"
+    },
+
+    {
+      "id": "ending_start",
+      "type": "tts",
+      "audio_file": "ending_start.mp3",
+      "text": "[playful][laugh] Wowww that was sooo much fun {{child_name}}! [laugh] [short pause] {{child_name}} and {{parent_name}}, go grab all the pink, blue, purple, and green things you found and bring them together… [short pause] and then we count them all together!!!"
+    },
+    {
+      "id": "listen_counting",
+      "type": "listen",
+      "duration_seconds": 10,
+      "next": "ending_celebrate"
+    },
+    {
+      "id": "ending_celebrate",
+      "type": "audio",
+      "audio_file": "ending_celebrate.mp3",
+      "next": "ending_praise"
+    },
+    {
+      "id": "ending_praise",
+      "type": "tts",
+      "audio_file": "ending_praise.mp3",
+      "text": "[playful][excited] {{child_name}}, you did such an amazing job today! [laugh] I had sooo much fun playing with you! [short pause]",
+      "next": "closing_song"
+    },
+    {
+      "id": "closing_song",
+      "type": "audio",
+      "audio_file": "closing_song.mp3",
+      "next": "ending_come_back"
+    },
+    {
+      "id": "ending_come_back",
+      "type": "tts",
+      "audio_file": "ending_come_back.mp3",
+      "text": "[playful][laugh] we should play again really soon! [short pause] Bye-bye {{child_name}}… bye {{parent_name}}! [big laugh]",
+      "next": "end"
+    }
+  ]
+}
