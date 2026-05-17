@@ -29,6 +29,9 @@ let audioBasePath = "/cache/v2";
 let searchDecisionTimer = null;
 let openMicLoopAudio = null;
 const BASE_AUDIO_PATH = "/audio/v2";
+let mediaRecorder = null;
+let recordingChunks = [];
+let recordingActive = false;
 
 const DEFAULT_AUDIO_DELAY_MS = 500;
 const DEFAULT_LISTEN_SECONDS = 7;
@@ -202,6 +205,17 @@ function stopRecognition() {
   recognitionReady = false;
 }
 
+function stopFallbackRecording() {
+  if (mediaRecorder && recordingActive) {
+    try {
+      mediaRecorder.stop();
+    } catch (error) {
+      // ignore
+    }
+  }
+  recordingActive = false;
+}
+
 function clearListenTimeout() {
   if (listenTimeout) {
     clearTimeout(listenTimeout);
@@ -241,6 +255,7 @@ async function handleAutoAdvance() {
   clearSearchDecisionTimer();
   stopLoopAudio();
   stopRecognition();
+  stopFallbackRecording();
   await new Promise((resolve) => setTimeout(resolve, 0));
   continueBtn.click();
 }
@@ -259,6 +274,64 @@ function applyVariables(text) {
   return text
     .replaceAll("{{child_name}}", childName)
     .replaceAll("{{parent_name}}", parentName);
+}
+
+async function transcribeRecording(scene) {
+  if (!recordingChunks.length) {
+    return "";
+  }
+  const blob = new Blob(recordingChunks, { type: recordingChunks[0]?.type || "audio/webm" });
+  const formData = new FormData();
+  formData.append("file", blob, "speech.webm");
+
+  const response = await fetch("/transcribe", {
+    method: "POST",
+    body: formData
+  });
+  if (!response.ok) {
+    return "";
+  }
+  const data = await response.json();
+  const transcript = (data.text || "").trim();
+  lastTranscript = transcript;
+  return transcript;
+}
+
+function shouldAutoAdvanceFromTranscript(scene, transcript) {
+  if (!transcript) return true;
+  if (isConfirmScene(scene)) {
+    return shouldTriggerNextConfirm(transcript);
+  }
+  return true;
+}
+
+function startFallbackRecording(scene, durationMs) {
+  if (!micStream || !window.MediaRecorder) return;
+  if (recordingActive) return;
+  recordingChunks = [];
+  mediaRecorder = new MediaRecorder(micStream);
+  recordingActive = true;
+
+  mediaRecorder.ondataavailable = (event) => {
+    if (event.data && event.data.size > 0) {
+      recordingChunks.push(event.data);
+    }
+  };
+
+  mediaRecorder.onstop = async () => {
+    recordingActive = false;
+    const transcript = await transcribeRecording(scene);
+    if (shouldAutoAdvanceFromTranscript(scene, transcript)) {
+      handleAutoAdvance();
+    } else {
+      handleAutoAdvance();
+    }
+  };
+
+  mediaRecorder.start();
+  setTimeout(() => {
+    stopFallbackRecording();
+  }, durationMs);
 }
 
 function getAudioSrc(audioFile, useCache = true) {
@@ -546,6 +619,9 @@ async function runScene(scene) {
 
     if (recognition) {
       ensureRecognitionRunning();
+    } else if (window.MediaRecorder) {
+      const durationMs = (scene.duration_seconds ?? DEFAULT_LISTEN_SECONDS) * 1000;
+      startFallbackRecording(scene, durationMs);
     }
 
     const duration = scene.duration_seconds ?? DEFAULT_LISTEN_SECONDS;
@@ -596,6 +672,7 @@ function finishPlay() {
   clearSilenceTimeout();
   clearSearchDecisionTimer();
   stopLoopAudio();
+  stopFallbackRecording();
   stopRecognition();
   stopMic();
 }
@@ -705,6 +782,7 @@ stopBtn.addEventListener("click", () => {
   clearSilenceTimeout();
   clearSearchDecisionTimer();
   stopLoopAudio();
+  stopFallbackRecording();
   stopRecognition();
   stopMic();
   audioBasePath = "./audio";

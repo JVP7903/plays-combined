@@ -25,6 +25,9 @@ let lastTranscript = "";
 let recognitionReady = false;
 let audioBasePath = "/cache/v3";
 const BASE_AUDIO_PATH = "/audio/v3";
+let mediaRecorder = null;
+let recordingChunks = [];
+let recordingActive = false;
 
 const DEFAULT_AUDIO_DELAY_MS = 500;
 const INTRO_LISTEN_SECONDS = 7;
@@ -144,6 +147,17 @@ function stopRecognition() {
   recognitionReady = false;
 }
 
+function stopFallbackRecording() {
+  if (mediaRecorder && recordingActive) {
+    try {
+      mediaRecorder.stop();
+    } catch (error) {
+      // ignore
+    }
+  }
+  recordingActive = false;
+}
+
 function clearListenTimeout() {
   if (listenTimeout) {
     clearTimeout(listenTimeout);
@@ -166,6 +180,7 @@ async function handleAutoAdvance() {
   autoAdvanceTriggered = true;
   clearListenTimeout();
   stopRecognition();
+  stopFallbackRecording();
   await new Promise((resolve) => setTimeout(resolve, 0));
   continueBtn.click();
 }
@@ -184,6 +199,58 @@ function applyVariables(text) {
   return text
     .replaceAll("{{child_name}}", childName)
     .replaceAll("{{parent_name}}", parentName);
+}
+
+async function transcribeRecording() {
+  if (!recordingChunks.length) {
+    return "";
+  }
+  const blob = new Blob(recordingChunks, { type: recordingChunks[0]?.type || "audio/webm" });
+  const formData = new FormData();
+  formData.append("file", blob, "speech.webm");
+
+  const response = await fetch("/transcribe", {
+    method: "POST",
+    body: formData
+  });
+  if (!response.ok) {
+    return "";
+  }
+  const data = await response.json();
+  const transcript = (data.text || "").trim();
+  lastTranscript = transcript;
+  return transcript;
+}
+
+function startFallbackRecording(scene, durationMs) {
+  if (!micStream || !window.MediaRecorder) return;
+  if (recordingActive) return;
+  recordingChunks = [];
+  mediaRecorder = new MediaRecorder(micStream);
+  recordingActive = true;
+
+  mediaRecorder.ondataavailable = (event) => {
+    if (event.data && event.data.size > 0) {
+      recordingChunks.push(event.data);
+    }
+  };
+
+  mediaRecorder.onstop = async () => {
+    recordingActive = false;
+    const transcript = await transcribeRecording();
+    if (isEndingConfirm(scene)) {
+      if (confirmPatterns.some((pattern) => pattern.test(transcript))) {
+        handleAutoAdvance();
+        return;
+      }
+    }
+    handleAutoAdvance();
+  };
+
+  mediaRecorder.start();
+  setTimeout(() => {
+    stopFallbackRecording();
+  }, durationMs);
 }
 
 function getNextSceneId(scene) {
@@ -281,6 +348,9 @@ async function runScene(scene) {
 
     if (recognition) {
       ensureRecognitionRunning();
+    } else if (window.MediaRecorder) {
+      const durationMs = (scene.duration_seconds ?? DEFAULT_LISTEN_SECONDS) * 1000;
+      startFallbackRecording(scene, durationMs);
     }
 
     const duration = scene.duration_seconds ?? DEFAULT_LISTEN_SECONDS;
@@ -321,6 +391,7 @@ function finishPlay() {
   setStatus("Complete");
   setContent("<p>Play finished.</p>");
   clearListenTimeout();
+  stopFallbackRecording();
   stopRecognition();
   stopMic();
 }
@@ -429,6 +500,7 @@ stopBtn.addEventListener("click", () => {
     currentAudio = null;
   }
   clearListenTimeout();
+  stopFallbackRecording();
   stopRecognition();
   stopMic();
   audioBasePath = "./audio";
