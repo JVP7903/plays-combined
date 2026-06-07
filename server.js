@@ -86,7 +86,16 @@ async function generateTts({ voiceId, model, outputFormat, text }) {
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`ElevenLabs error: ${response.status} ${errorText}`);
+    throw new Error(`ElevenLabs error ${response.status}: ${errorText.slice(0, 300)}`);
+  }
+
+  // Catch silent redirects: key invalid/expired causes ElevenLabs to return HTML with 200
+  const contentType = response.headers.get('content-type') || '';
+  if (contentType.includes('text/html')) {
+    throw new Error(
+      `ElevenLabs API key is invalid or expired (got HTML instead of audio). ` +
+      `Update ELEVENLABS_API_KEY in Render dashboard → Environment.`
+    );
   }
 
   const arrayBuffer = await response.arrayBuffer();
