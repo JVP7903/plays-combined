@@ -136,8 +136,19 @@ app.post("/generate", async (req, res) => {
 
       const destPath = path.join(cacheDir, audioFile);
       if (await fileExists(destPath)) {
-        reusedFiles.push(audioFile);
-        continue;
+        // Validate cached file is real MP3 — delete if corrupt
+        const buf = Buffer.alloc(3);
+        const fd = await fs.open(destPath, 'r');
+        await fd.read(buf, 0, 3, 0);
+        await fd.close();
+        const isMP3 = (buf[0] === 0x49 && buf[1] === 0x44 && buf[2] === 0x33) || // ID3
+                      (buf[0] === 0xFF && (buf[1] & 0xE0) === 0xE0); // MPEG sync
+        if (isMP3) {
+          reusedFiles.push(audioFile);
+          continue;
+        }
+        console.warn(`[cache] Deleting corrupt file: ${audioFile}`);
+        await fs.unlink(destPath);
       }
 
       if (scene.type === "audio" && !scene.text) {
@@ -153,6 +164,12 @@ app.post("/generate", async (req, res) => {
         const text = applyVariables(scene.text || "", variables);
         if (!text) continue;
         const audioBuffer = await generateTts({ voiceId, model, outputFormat, text });
+        // Validate before saving
+        if (!audioBuffer || audioBuffer.length < 1000 ||
+            !((audioBuffer[0] === 0x49 && audioBuffer[1] === 0x44 && audioBuffer[2] === 0x33) ||
+              (audioBuffer[0] === 0xFF && (audioBuffer[1] & 0xE0) === 0xE0))) {
+          throw new Error(`ElevenLabs returned invalid audio for: ${audioFile}`);
+        }
         await fs.writeFile(destPath, audioBuffer);
         generatedFiles.push(audioFile);
       }
