@@ -233,12 +233,30 @@ app.get("/health", async (req, res) => {
     }
   }
 
+  // Get this server's outbound IP (what ElevenLabs sees)
+  let outboundIp = "unknown";
+  try {
+    const ipRes = await fetch("https://api.ipify.org?format=json");
+    const ipJson = await ipRes.json();
+    outboundIp = ipJson.ip;
+  } catch {}
+
+  // Get IP geo info
+  let ipGeo = "unknown";
+  try {
+    const geoRes = await fetch(`https://ipapi.co/${outboundIp}/json/`);
+    const geoJson = await geoRes.json();
+    ipGeo = `${geoJson.city}, ${geoJson.region}, ${geoJson.country_name} (${geoJson.org})`;
+  } catch {}
+
   res.json({
     apiKey: keySnippet,
     elevenLabsStatus: elevenStatus,
     elevenLabsResponse: elevenDetail,
+    outboundIp,
+    ipGeo,
     nodeVersion: process.version,
-    region: process.env.RENDER_REGION || "unknown"
+    renderRegion: process.env.RENDER_REGION || process.env.RENDER_SERVICE_ID || "unknown"
   });
 });
 
