@@ -209,6 +209,39 @@ app.post("/generate", async (req, res) => {
   }
 });
 
+app.get("/health", async (req, res) => {
+  const keySnippet = ELEVENLABS_API_KEY
+    ? `${ELEVENLABS_API_KEY.slice(0, 6)}...${ELEVENLABS_API_KEY.slice(-4)} (${ELEVENLABS_API_KEY.length} chars)`
+    : "NOT SET";
+
+  let elevenStatus = "not tested";
+  let elevenDetail = null;
+  if (ELEVENLABS_API_KEY) {
+    try {
+      const r = await fetch("https://api.elevenlabs.io/v1/user", {
+        headers: { "xi-api-key": ELEVENLABS_API_KEY }
+      });
+      const ct = r.headers.get("content-type") || "";
+      const body = ct.includes("application/json")
+        ? JSON.stringify(await r.json())
+        : (await r.text()).slice(0, 200);
+      elevenStatus = r.ok ? "ok" : `error-${r.status}`;
+      elevenDetail = body;
+    } catch (e) {
+      elevenStatus = "fetch-failed";
+      elevenDetail = e.message;
+    }
+  }
+
+  res.json({
+    apiKey: keySnippet,
+    elevenLabsStatus: elevenStatus,
+    elevenLabsResponse: elevenDetail,
+    nodeVersion: process.version,
+    region: process.env.RENDER_REGION || "unknown"
+  });
+});
+
 app.post("/transcribe", upload.single("file"), async (req, res) => {
   if (!OPENAI_API_KEY) {
     return res.status(500).json({ error: "Missing OPENAI_API_KEY" });
