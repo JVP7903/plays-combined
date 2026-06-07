@@ -90,7 +90,16 @@ async function generateTts({ voiceId, model, outputFormat, text }) {
   }
 
   const arrayBuffer = await response.arrayBuffer();
-  return Buffer.from(arrayBuffer);
+  const buf = Buffer.from(arrayBuffer);
+  // Check first bytes are valid MP3 before returning
+  const isMP3 = buf.length > 100 &&
+    ((buf[0] === 0x49 && buf[1] === 0x44 && buf[2] === 0x33) ||
+     (buf[0] === 0xFF && (buf[1] & 0xE0) === 0xE0));
+  if (!isMP3) {
+    const preview = buf.slice(0, 200).toString('utf8').replace(/\n/g, ' ');
+    throw new Error(`ElevenLabs returned non-audio (${buf.length} bytes): ${preview}`);
+  }
+  return buf;
 }
 
 app.post("/generate", async (req, res) => {
@@ -164,12 +173,6 @@ app.post("/generate", async (req, res) => {
         const text = applyVariables(scene.text || "", variables);
         if (!text) continue;
         const audioBuffer = await generateTts({ voiceId, model, outputFormat, text });
-        // Validate before saving
-        if (!audioBuffer || audioBuffer.length < 1000 ||
-            !((audioBuffer[0] === 0x49 && audioBuffer[1] === 0x44 && audioBuffer[2] === 0x33) ||
-              (audioBuffer[0] === 0xFF && (audioBuffer[1] & 0xE0) === 0xE0))) {
-          throw new Error(`ElevenLabs returned invalid audio for: ${audioFile}`);
-        }
         await fs.writeFile(destPath, audioBuffer);
         generatedFiles.push(audioFile);
       }
